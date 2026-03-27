@@ -1,0 +1,15 @@
+[package]
+name = "esp-idf-improv-wifi"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+description = "ImprovWiFi serial provisioning protocol for esp-idf-svc in Rust"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/nightwatch-astro/esp-idf-improv-wifi"
+keywords = ["esp-idf", "esp32", "improv", "wifi", "provisioning"]
+categories = ["embedded", "network-programming"]
+readme = "README.md"
+
+[dependencies]
+esp-idf-svc = { version = "0.52", default-features = false }
+log = "0.4"
