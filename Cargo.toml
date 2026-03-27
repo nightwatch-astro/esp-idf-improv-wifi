@@ -10,6 +10,10 @@ keywords = ["esp-idf", "esp32", "improv", "wifi", "provisioning"]
 categories = ["embedded", "network-programming"]
 readme = "README.md"
 
+[features]
+default = []
+esp-idf-svc = ["dep:esp-idf-svc"]
+
 [dependencies]
-esp-idf-svc = { version = "0.52", default-features = false }
+esp-idf-svc = { version = "0.52", default-features = false, optional = true }
 log = "0.4"
