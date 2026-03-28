@@ -1,0 +1,70 @@
+name: Bug Report
+description: Report a bug in esp-idf-improv-wifi
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce the issue?
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened. Include error messages if any.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Crate version
+      description: Which version of esp-idf-improv-wifi?
+      placeholder: "e.g. 0.1.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: target
+    attributes:
+      label: Target platform
+      options:
+        - ESP32 (Xtensa)
+        - ESP32-S2 (Xtensa)
+        - ESP32-S3 (Xtensa)
+        - ESP32-C3 (RISC-V)
+        - ESP32-C6 (RISC-V)
+        - ESP32-H2 (RISC-V)
+        - Desktop (host testing)
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other context, logs, or serial output.

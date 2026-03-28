@@ -2,18 +2,66 @@ name: CI
 
 on:
   push:
-    branches: [main]
   pull_request:
+
+concurrency:
+  group: ci-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  check:
+  pr-title:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: amannn/action-semantic-pull-request@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
-      - run: cargo check --all-features
-      - run: cargo clippy --all-features -- -D warnings
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo test --no-default-features
+      - name: Verify publishable
+        run: cargo publish --dry-run --no-default-features
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo clippy --no-default-features -- -D warnings
       - run: cargo fmt --check
+
+  check-features:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo check --no-default-features
+
+  semver-check:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check if crate is published
+        id: check
+        run: |
+          if curl -sf "https://crates.io/api/v1/crates/esp-idf-improv-wifi" > /dev/null 2>&1; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+            echo "Crate not yet published — skipping semver check"
+          fi
+      - uses: obi1kenobi/cargo-semver-checks-action@v2
+        if: steps.check.outputs.published == 'true'
