@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: ImprovWiFi Specification
+    url: https://www.improv-wifi.com/
+    about: Official Improv WiFi protocol specification
+  - name: ESP-IDF Documentation
+    url: https://docs.espressif.com/projects/esp-idf/en/latest/
+    about: Official ESP-IDF documentation

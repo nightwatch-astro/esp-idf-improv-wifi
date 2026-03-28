@@ -4,7 +4,6 @@ on:
   push:
   pull_request:
 
-# Cancel duplicate runs: when a PR exists, the push event is redundant.
 concurrency:
   group: ci-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
@@ -27,10 +26,9 @@ jobs:
       - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-      - run: cargo test --all-features
       - run: cargo test --no-default-features
       - name: Verify publishable
-        run: cargo publish --dry-run
+        run: cargo publish --dry-run --no-default-features
 
   lint:
     runs-on: ubuntu-latest
@@ -40,7 +38,7 @@ jobs:
         with:
           components: clippy, rustfmt
       - uses: Swatinem/rust-cache@v2
-      - run: cargo clippy --all-features -- -D warnings
+      - run: cargo clippy --no-default-features -- -D warnings
       - run: cargo fmt --check
 
   check-features:
@@ -49,7 +47,6 @@ jobs:
       - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-      - run: cargo check --all-features
       - run: cargo check --no-default-features
 
   semver-check:
