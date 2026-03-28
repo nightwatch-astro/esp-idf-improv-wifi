@@ -14,12 +14,11 @@ Transport-agnostic core that works on any `std::io::Read + Write` stream, with a
 
 ## Usage
 
-```toml
-[dependencies]
-esp-idf-improv-wifi = "0.1"
+```bash
+cargo add esp-idf-improv-wifi
 
 # For ESP32 UART transport:
-esp-idf-improv-wifi = { version = "0.1", features = ["esp-idf-svc"] }
+cargo add esp-idf-improv-wifi --features esp-idf-svc
 ```
 
 ```rust
