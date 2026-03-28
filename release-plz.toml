@@ -1,0 +1,32 @@
+[workspace]
+# Safe ordering: cargo publish → git tag → GitHub Release
+publish = true
+git_tag_enable = true
+git_release_enable = true
+git_release_draft = false
+publish_timeout = "30m"
+
+# Semver check runs as separate CI job (faster with pre-built binary)
+semver_check = false
+features_always_increment_minor = true
+
+# Keep deps fresh in release PRs
+dependencies_update = true
+
+# Release PR settings
+pr_labels = ["release"]
+
+[[package]]
+name = "esp-idf-improv-wifi"
+
+[changelog]
+# Conventional commits → changelog sections
+commit_parsers = [
+    { message = "^feat", group = "Features" },
+    { message = "^fix", group = "Bug Fixes" },
+    { message = "^perf", group = "Performance" },
+    { message = "^refactor", group = "Refactoring" },
+    { message = "^docs", group = "Documentation" },
+    { message = "^test", group = "Testing" },
+    { message = "^chore", group = "Miscellaneous" },
+]
