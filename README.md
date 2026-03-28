@@ -14,12 +14,11 @@ Transport-agnostic core that works on any `std::io::Read + Write` stream, with a
 
 ## Usage
 
-```toml
-[dependencies]
-esp-idf-improv-wifi = "0.1"
+```bash
+cargo add esp-idf-improv-wifi
 
 # For ESP32 UART transport:
-esp-idf-improv-wifi = { version = "0.1", features = ["esp-idf-svc"] }
+cargo add esp-idf-improv-wifi --features esp-idf-svc
 ```
 
 ```rust
@@ -86,9 +85,6 @@ See the [Improv WiFi serial specification](https://www.improv-wifi.com/serial/) 
 
 ## License
 
-Licensed under either of
+Licensed under the Apache License, Version 2.0 ([LICENSE](LICENSE) or <http://www.apache.org/licenses/LICENSE-2.0>).
 
-- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or <http://www.apache.org/licenses/LICENSE-2.0>)
-- MIT license ([LICENSE-MIT](LICENSE-MIT) or <http://opensource.org/licenses/MIT>)
-
-at your option.
+Unless required by applicable law or agreed to in writing, software distributed under this license is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND.
