@@ -54,14 +54,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Check if crate is published
-        id: check
-        run: |
-          if curl -sf "https://crates.io/api/v1/crates/esp-idf-improv-wifi" > /dev/null 2>&1; then
-            echo "published=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "published=false" >> "$GITHUB_OUTPUT"
-            echo "Crate not yet published — skipping semver check"
-          fi
       - uses: obi1kenobi/cargo-semver-checks-action@v2
-        if: steps.check.outputs.published == 'true'
