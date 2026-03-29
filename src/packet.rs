@@ -1,19 +1,10 @@
-use std::fmt;
-
 use crate::types::{Command, PacketType};
 use crate::{HEADER, MAX_DATA_LENGTH, PROTOCOL_VERSION};
 
 /// Error returned when parsing a packet or RPC payload fails.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
+#[error("parse error: {0}")]
 pub struct ParseError(pub &'static str);
-
-impl fmt::Display for ParseError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "parse error: {}", self.0)
-    }
-}
-
-impl std::error::Error for ParseError {}
 
 /// A parsed Improv serial packet.
 #[derive(Debug, Clone, PartialEq, Eq)]
