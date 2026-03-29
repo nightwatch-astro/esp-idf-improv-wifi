@@ -18,6 +18,8 @@ pr_labels = ["release"]
 
 [[package]]
 name = "esp-idf-improv-wifi"
+# ESP-IDF crates can't build on standard runners (need Xtensa toolchain)
+publish_no_verify = true
 
 [changelog]
 # Conventional commits → changelog sections
