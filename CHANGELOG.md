@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.2](https://github.com/nightwatch-astro/esp-idf-improv-wifi/compare/v0.2.1...v0.2.2) - 2026-03-30
+
+### Bug Fixes
+
+- *(ci)* remove semver-check job for ESP-IDF embedded crate
+- *(ci)* restore dependabot config with grouping
+
+### Miscellaneous
+
+- *(deps)* bump dorny/paths-filter from 3 to 4 ([#11](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/11))
+
+### Ci
+
+- add minor+patch grouping to dependabot
+
 ## [0.2.1](https://github.com/nightwatch-astro/esp-idf-improv-wifi/compare/v0.2.0...v0.2.1) - 2026-03-29
 
 ### Refactoring
