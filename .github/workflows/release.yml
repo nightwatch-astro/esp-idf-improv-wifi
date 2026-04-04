@@ -11,5 +11,5 @@ permissions:
 
 jobs:
   release:
-    uses: nightwatch-astro/.github/.github/workflows/rust-release.yml@main
+    uses: nightwatch-astro/.github/.github/workflows/rust-release.yml@278fc3e6e2ab154e146c07107c95d192919bf84b # main
     secrets: inherit
