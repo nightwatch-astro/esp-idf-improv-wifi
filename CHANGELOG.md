@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.3](https://github.com/nightwatch-astro/esp-idf-improv-wifi/compare/v0.2.2...v0.2.3) - 2026-04-04
+
+### Miscellaneous
+
+- pin GitHub Actions to commit SHAs
+- pin GitHub Actions to commit SHAs
+- pin GitHub Actions to commit SHAs
+- add CODEOWNERS for CI security
+- add pre-commit config with Rust hooks ([#13](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/13))
+
+### Performance
+
+- *(ci)* replace rust-cache with sccache ([#16](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/16))
+
 ## [0.2.2](https://github.com/nightwatch-astro/esp-idf-improv-wifi/compare/v0.2.1...v0.2.2) - 2026-03-30
 
 ### Bug Fixes
