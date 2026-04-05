@@ -14,6 +14,21 @@ readme = "README.md"
 default = []
 esp-idf-svc = ["dep:esp-idf-svc"]
 
+[lints.clippy]
+# Broad lint groups (lower priority so individual overrides win)
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+cargo = { level = "warn", priority = -1 }
+
+# Restriction lints for embedded library safety
+unwrap_used = "warn"
+expect_used = "warn"
+todo = "warn"
+unimplemented = "warn"
+dbg_macro = "warn"
+undocumented_unsafe_blocks = "warn"
+mem_forget = "warn"
+
 [dependencies]
 esp-idf-svc = { version = "0.52", default-features = false, optional = true }
 log = "0.4"
