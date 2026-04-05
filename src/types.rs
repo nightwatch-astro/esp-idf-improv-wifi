@@ -3,11 +3,11 @@ use std::fmt;
 /// Provisioning state machine states.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ImprovState {
-    /// Ready to accept WiFi credentials.
+    /// Ready to accept Wi-Fi credentials.
     Ready = 0x02,
-    /// Attempting WiFi connection with received credentials.
+    /// Attempting Wi-Fi connection with received credentials.
     Provisioning = 0x03,
-    /// Successfully connected to WiFi.
+    /// Successfully connected to Wi-Fi.
     Provisioned = 0x04,
 }
 
@@ -43,7 +43,7 @@ pub enum ImprovError {
     InvalidRpc = 0x01,
     /// Unrecognized command ID.
     UnknownRpc = 0x02,
-    /// WiFi connection failed.
+    /// Wi-Fi connection failed.
     UnableToConnect = 0x03,
     /// Invalid hostname per RFC 1123.
     BadHostname = 0x05,
@@ -121,13 +121,13 @@ impl fmt::Display for PacketType {
 /// RPC command types from client to device.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Command {
-    /// Send WiFi SSID and password.
+    /// Send Wi-Fi SSID and password.
     WifiSettings = 0x01,
     /// Request current provisioning state.
     RequestCurrentState = 0x02,
     /// Request device information.
     GetDeviceInfo = 0x03,
-    /// Request available WiFi networks.
+    /// Request available Wi-Fi networks.
     GetWifiNetworks = 0x04,
     /// Get or set device hostname.
     GetSetHostname = 0x05,
@@ -173,7 +173,7 @@ pub struct DeviceInfo {
     pub device_name: String,
 }
 
-/// A scanned WiFi network.
+/// A scanned Wi-Fi network.
 #[derive(Debug, Clone)]
 pub struct WifiNetwork {
     /// Network SSID.
@@ -184,7 +184,7 @@ pub struct WifiNetwork {
     pub auth_required: bool,
 }
 
-/// Parsed WiFi credentials from a WIFI_SETTINGS command.
+/// Parsed Wi-Fi credentials from a `WIFI_SETTINGS` command.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WifiCredentials {
     /// Network SSID.

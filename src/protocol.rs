@@ -20,6 +20,7 @@ pub struct ImprovWifiBuilder {
 
 impl ImprovWifiBuilder {
     /// Create a new builder with required device info.
+    #[must_use]
     pub fn new(device_info: DeviceInfo) -> Self {
         Self {
             device_info,
@@ -31,24 +32,28 @@ impl ImprovWifiBuilder {
     }
 
     /// Set redirect URL sent after successful provisioning.
+    #[must_use]
     pub fn redirect_url(mut self, url: impl Into<String>) -> Self {
         self.redirect_url = Some(url.into());
         self
     }
 
-    /// Set WiFi connect callback: (ssid, password) -> Result<url, ()>.
+    /// Set Wi-Fi connect callback: `(ssid, password) -> Result<url, ()>`.
+    #[must_use]
     pub fn on_connect(mut self, f: impl FnMut(&str, &str) -> Result<String, ()> + 'static) -> Self {
         self.on_connect = Some(Box::new(f));
         self
     }
 
-    /// Set WiFi scan callback: () -> Vec<WifiNetwork>.
+    /// Set Wi-Fi scan callback: `() -> Vec<WifiNetwork>`.
+    #[must_use]
     pub fn on_scan(mut self, f: impl FnMut() -> Vec<WifiNetwork> + 'static) -> Self {
         self.on_scan = Some(Box::new(f));
         self
     }
 
-    /// Set hostname get/set callback: None=get, Some(name)=set.
+    /// Set hostname get/set callback: `None`=get, `Some(name)`=set.
+    #[must_use]
     pub fn on_hostname(
         mut self,
         f: impl FnMut(Option<&str>) -> Result<String, ()> + 'static,
@@ -74,7 +79,7 @@ impl ImprovWifiBuilder {
     }
 }
 
-/// Main ImprovWiFi protocol handler, generic over transport.
+/// Main `ImprovWiFi` protocol handler, generic over transport.
 pub struct ImprovWifi<T: Read + Write> {
     transport: T,
     state: ImprovState,
@@ -90,16 +95,22 @@ pub struct ImprovWifi<T: Read + Write> {
 
 impl<T: Read + Write> ImprovWifi<T> {
     /// Get current provisioning state.
-    pub fn state(&self) -> ImprovState {
+    #[must_use]
+    pub const fn state(&self) -> ImprovState {
         self.state
     }
 
     /// Get current error state.
-    pub fn error(&self) -> ImprovError {
+    #[must_use]
+    pub const fn error(&self) -> ImprovError {
         self.error
     }
 
     /// Send current state packet (for periodic advertisement).
+    ///
+    /// # Errors
+    ///
+    /// Returns an I/O error if writing to the transport fails.
     pub fn advertise_state(&mut self) -> io::Result<()> {
         self.send_current_state()
     }
@@ -108,6 +119,10 @@ impl<T: Read + Write> ImprovWifi<T> {
     ///
     /// Reads bytes, parses packets, executes commands, writes responses.
     /// Returns `Ok(true)` if a packet was processed, `Ok(false)` if no data.
+    ///
+    /// # Errors
+    ///
+    /// Returns an I/O error if reading from or writing to the transport fails.
     pub fn process(&mut self) -> io::Result<bool> {
         let n = match self.transport.read(&mut self.read_buf) {
             Ok(0) => return Ok(false),
@@ -119,20 +134,19 @@ impl<T: Read + Write> ImprovWifi<T> {
         let mut processed = false;
         for i in 0..n {
             if let Some(packet) = self.parser.feed(self.read_buf[i]) {
-                self.handle_packet(packet)?;
+                self.handle_packet(&packet)?;
                 processed = true;
             }
         }
         Ok(processed)
     }
 
-    fn handle_packet(&mut self, packet: RawPacket) -> io::Result<()> {
-        match packet.packet_type {
-            PacketType::RpcCommand => self.handle_rpc_command(&packet.data),
-            _ => {
-                log::debug!("ignoring non-RPC packet: {}", packet.packet_type);
-                Ok(())
-            }
+    fn handle_packet(&mut self, packet: &RawPacket) -> io::Result<()> {
+        if packet.packet_type == PacketType::RpcCommand {
+            self.handle_rpc_command(&packet.data)
+        } else {
+            log::debug!("ignoring non-RPC packet: {}", packet.packet_type);
+            Ok(())
         }
     }
 
@@ -188,27 +202,24 @@ impl<T: Read + Write> ImprovWifi<T> {
         self.set_state(ImprovState::Provisioning)?;
 
         // Invoke connect callback
-        let result = match &mut self.on_connect {
-            Some(cb) => cb(ssid, password),
-            None => {
+        let result = self.on_connect.as_mut().map_or_else(
+            || {
                 log::warn!("no connect callback configured");
                 Err(())
-            }
-        };
+            },
+            |cb| cb(ssid, password),
+        );
 
-        match result {
-            Ok(url) => {
-                log::info!("connected successfully, URL: {url}");
-                let redirect = self.redirect_url.clone().unwrap_or(url);
-                let rpc_data = build_rpc_result(Command::WifiSettings, &[&redirect]);
-                self.send_packet(PacketType::RpcResult, &rpc_data)?;
-                self.set_state(ImprovState::Provisioned)
-            }
-            Err(()) => {
-                log::warn!("WiFi connection failed");
-                self.set_error(ImprovError::UnableToConnect)?;
-                self.set_state(ImprovState::Ready)
-            }
+        if let Ok(url) = result {
+            log::info!("connected successfully, URL: {url}");
+            let redirect = self.redirect_url.clone().unwrap_or(url);
+            let rpc_data = build_rpc_result(Command::WifiSettings, &[&redirect]);
+            self.send_packet(PacketType::RpcResult, &rpc_data)?;
+            self.set_state(ImprovState::Provisioned)
+        } else {
+            log::warn!("Wi-Fi connection failed");
+            self.set_error(ImprovError::UnableToConnect)?;
+            self.set_state(ImprovState::Ready)
         }
     }
 
@@ -231,13 +242,11 @@ impl<T: Read + Write> ImprovWifi<T> {
     }
 
     fn handle_get_wifi_networks(&mut self) -> io::Result<()> {
-        let networks = match &mut self.on_scan {
-            Some(cb) => cb(),
-            None => {
-                log::warn!("no scan callback configured");
-                return self.set_error(ImprovError::UnknownRpc);
-            }
+        let Some(scan_cb) = &mut self.on_scan else {
+            log::warn!("no scan callback configured");
+            return self.set_error(ImprovError::UnknownRpc);
         };
+        let networks = scan_cb();
 
         for network in &networks {
             let rssi_str = network.rssi.to_string();
@@ -255,12 +264,9 @@ impl<T: Read + Write> ImprovWifi<T> {
     }
 
     fn handle_get_set_hostname(&mut self, payload: &[u8]) -> io::Result<()> {
-        let cb = match &mut self.on_hostname {
-            Some(cb) => cb,
-            None => {
-                log::warn!("no hostname callback configured");
-                return self.set_error(ImprovError::UnknownRpc);
-            }
+        let Some(cb) = &mut self.on_hostname else {
+            log::warn!("no hostname callback configured");
+            return self.set_error(ImprovError::UnknownRpc);
         };
 
         if payload.is_empty() {
@@ -342,6 +348,11 @@ fn is_valid_hostname(hostname: &str) -> bool {
 }
 
 #[cfg(test)]
+#[allow(
+    clippy::unwrap_used,
+    clippy::cast_possible_truncation,
+    clippy::needless_collect
+)]
 mod tests {
     use super::*;
     use crate::packet::build_packet;
@@ -356,7 +367,7 @@ mod tests {
         }
     }
 
-    /// Build a WIFI_SETTINGS RPC command packet.
+    /// Build a `WIFI_SETTINGS` RPC command packet.
     fn make_wifi_settings_packet(ssid: &str, password: &str) -> Vec<u8> {
         let mut payload = Vec::new();
         payload.push(Command::WifiSettings as u8);
@@ -756,9 +767,8 @@ mod tests {
         let input = make_simple_command_packet(Command::GetSetHostname);
         let transport = Cursor::new(Vec::new());
         let mut handler = ImprovWifiBuilder::new(make_device_info())
-            .on_hostname(|arg| match arg {
-                None => Ok("nightwatch-01".into()),
-                Some(name) => Ok(name.to_string()),
+            .on_hostname(|arg| {
+                arg.map_or_else(|| Ok("nightwatch-01".into()), |name| Ok(name.to_string()))
             })
             .build(transport);
 
@@ -791,10 +801,7 @@ mod tests {
 
         let transport = Cursor::new(Vec::new());
         let mut handler = ImprovWifiBuilder::new(make_device_info())
-            .on_hostname(|arg| match arg {
-                None => Ok("old".into()),
-                Some(name) => Ok(name.to_string()),
-            })
+            .on_hostname(|arg| arg.map_or_else(|| Ok("old".into()), |name| Ok(name.to_string())))
             .build(transport);
 
         handler.transport.get_mut().extend_from_slice(&input);

@@ -1,7 +1,7 @@
-//! ImprovWiFi serial provisioning protocol for esp-idf-svc.
+//! `ImprovWiFi` serial provisioning protocol for `esp-idf-svc`.
 //!
 //! This crate implements the [Improv WiFi](https://www.improv-wifi.com/) serial
-//! provisioning protocol, allowing IoT devices to receive WiFi credentials over
+//! provisioning protocol, allowing devices to receive Wi-Fi credentials over
 //! a serial (UART) connection from a browser or provisioning tool.
 //!
 //! # Architecture

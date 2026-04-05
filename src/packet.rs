@@ -39,6 +39,7 @@ enum ParseState {
 }
 
 impl PacketParser {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             buf: Vec::with_capacity(HEADER.len() + 3 + MAX_DATA_LENGTH + 1),
@@ -90,12 +91,11 @@ impl PacketParser {
             }
             ParseState::Type => {
                 self.buf.push(byte);
-                match PacketType::try_from(byte) {
-                    Ok(_) => self.state = ParseState::Length,
-                    Err(_) => {
-                        log::warn!("unknown packet type: 0x{byte:02X}");
-                        self.reset();
-                    }
+                if PacketType::try_from(byte).is_ok() {
+                    self.state = ParseState::Length;
+                } else {
+                    log::warn!("unknown packet type: 0x{byte:02X}");
+                    self.reset();
                 }
                 None
             }
@@ -121,8 +121,11 @@ impl PacketParser {
             ParseState::Checksum => {
                 let expected: u8 = self.buf.iter().fold(0u8, |acc, &b| acc.wrapping_add(b));
                 if byte == expected {
-                    let packet_type =
-                        PacketType::try_from(self.buf[HEADER.len() + 1]).expect("validated");
+                    // Type byte was validated in ParseState::Type, so this cannot fail.
+                    let Ok(packet_type) = PacketType::try_from(self.buf[HEADER.len() + 1]) else {
+                        self.reset();
+                        return None;
+                    };
                     let data_start = HEADER.len() + 3; // header + version + type + length
                     let data = self.buf[data_start..].to_vec();
                     self.reset();
@@ -154,6 +157,11 @@ impl Default for PacketParser {
 }
 
 /// Build a complete wire-format Improv serial packet.
+///
+/// Data length is truncated to the 1-byte length field (max 255 bytes),
+/// which is enforced by [`MAX_DATA_LENGTH`].
+#[must_use]
+#[allow(clippy::cast_possible_truncation)] // Protocol uses 1-byte length field
 pub fn build_packet(packet_type: PacketType, data: &[u8]) -> Vec<u8> {
     let mut packet = Vec::with_capacity(HEADER.len() + 3 + data.len() + 1);
     packet.extend_from_slice(&HEADER);
@@ -168,7 +176,9 @@ pub fn build_packet(packet_type: PacketType, data: &[u8]) -> Vec<u8> {
 
 /// Build an RPC Result payload with length-prefixed UTF-8 strings.
 ///
-/// Format: command_id, total_data_length, [len, string_bytes...]...
+/// Format: `command_id`, `total_data_length`, `[len, string_bytes...]...`
+#[must_use]
+#[allow(clippy::cast_possible_truncation)] // Protocol uses 1-byte length fields
 pub fn build_rpc_result(command: Command, strings: &[&str]) -> Vec<u8> {
     let mut payload = Vec::new();
     // String data (length-prefixed)
@@ -186,6 +196,11 @@ pub fn build_rpc_result(command: Command, strings: &[&str]) -> Vec<u8> {
 /// Parse an RPC command from packet data.
 ///
 /// Returns the command type and the remaining payload bytes.
+///
+/// # Errors
+///
+/// Returns [`ParseError`] if the data is empty, the command byte is
+/// unrecognized, or the payload is truncated.
 pub fn parse_rpc_command(data: &[u8]) -> Result<(Command, Vec<u8>), ParseError> {
     if data.is_empty() {
         return Err(ParseError("empty RPC data"));
@@ -201,7 +216,11 @@ pub fn parse_rpc_command(data: &[u8]) -> Result<(Command, Vec<u8>), ParseError> 
     Ok((cmd, data[2..2 + payload_len].to_vec()))
 }
 
-/// Parse length-prefixed strings from an RPC payload (e.g., WIFI_SETTINGS).
+/// Parse length-prefixed strings from an RPC payload (e.g., `WIFI_SETTINGS`).
+///
+/// # Errors
+///
+/// Returns [`ParseError`] if a string is truncated or contains invalid UTF-8.
 pub fn parse_string_list(data: &[u8]) -> Result<Vec<String>, ParseError> {
     let mut strings = Vec::new();
     let mut pos = 0;
@@ -220,6 +239,7 @@ pub fn parse_string_list(data: &[u8]) -> Result<Vec<String>, ParseError> {
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::cast_possible_truncation)]
 mod tests {
     use super::*;
 
@@ -405,7 +425,7 @@ mod tests {
     fn test_two_packets_in_sequence() {
         let pkt1 = build_packet(PacketType::CurrentState, &[0x02]);
         let pkt2 = build_packet(PacketType::CurrentState, &[0x04]);
-        let mut combined = pkt1.clone();
+        let mut combined = pkt1;
         combined.extend_from_slice(&pkt2);
 
         let mut parser = PacketParser::new();
