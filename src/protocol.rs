@@ -388,8 +388,8 @@ mod tests {
     /// Helper: create a handler, write input bytes, process, return output bytes.
     fn run_handler(
         input: &[u8],
-        on_connect: Option<Box<dyn FnMut(&str, &str) -> Result<String, ()>>>,
-        on_scan: Option<Box<dyn FnMut() -> Vec<WifiNetwork>>>,
+        on_connect: Option<ConnectCb>,
+        on_scan: Option<ScanCb>,
     ) -> (ImprovWifi<Cursor<Vec<u8>>>, Vec<u8>) {
         let mut transport = Cursor::new(Vec::new());
         transport.get_mut().extend_from_slice(input);
