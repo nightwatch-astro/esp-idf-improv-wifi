@@ -28,8 +28,9 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+      - uses: taiki-e/install-action@nextest
       - uses: mozilla-actions/sccache-action@v0.0.9
-      - run: cargo test --no-default-features
+      - run: cargo nextest run --no-default-features
       - name: Verify publishable
         run: cargo publish --dry-run --no-default-features
 
@@ -44,7 +45,7 @@ jobs:
         with:
           components: clippy, rustfmt
       - uses: mozilla-actions/sccache-action@v0.0.9
-      - run: cargo clippy --no-default-features -- -D warnings
+      - run: cargo clippy --all-targets --no-default-features -- -D warnings
       - run: cargo fmt --check
 
   check-features:
