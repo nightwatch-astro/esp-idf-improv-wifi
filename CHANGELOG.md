@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.3](https://github.com/nightwatch-astro/esp-idf-improv-wifi/compare/v0.2.2...v0.2.3) - 2026-04-05
+
+### Bug Fixes
+
+- clippy complex type warning in protocol.rs ([#19](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/19))
+- *(ci)* add CI OK gate job ([#15](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/15))
+
+### Miscellaneous
+
+- enable clippy pedantic+nursery+cargo and fix all warnings ([#20](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/20))
+- pin GitHub Actions to commit SHAs
+- pin GitHub Actions to commit SHAs
+- pin GitHub Actions to commit SHAs
+- add CODEOWNERS for CI security
+- add pre-commit config with Rust hooks ([#13](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/13))
+
+### Performance
+
+- *(ci)* use nextest and clippy --all-targets ([#17](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/17))
+- *(ci)* replace rust-cache with sccache ([#16](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/16))
+
 ## [0.2.2](https://github.com/nightwatch-astro/esp-idf-improv-wifi/compare/v0.2.1...v0.2.2) - 2026-03-30
 
 ### Bug Fixes
