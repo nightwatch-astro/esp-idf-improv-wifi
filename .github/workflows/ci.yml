@@ -74,3 +74,24 @@ jobs:
               - 'src/**'
               - 'Cargo.toml'
               - 'Cargo.lock'
+
+  ci-ok:
+    name: CI OK
+    if: always()
+    needs: [pr-title, test, lint, check-features]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Evaluate results
+        env:
+          PR_TITLE_RESULT: ${{ needs.pr-title.result }}
+          TEST_RESULT: ${{ needs.test.result }}
+          LINT_RESULT: ${{ needs.lint.result }}
+          CHECK_FEATURES_RESULT: ${{ needs.check-features.result }}
+        run: |
+          for result in "$PR_TITLE_RESULT" "$TEST_RESULT" "$LINT_RESULT" "$CHECK_FEATURES_RESULT"; do
+            if [ "$result" = "failure" ] || [ "$result" = "cancelled" ]; then
+              echo "Job failed: $result"
+              exit 1
+            fi
+          done
+          echo "All checks passed or were skipped"
