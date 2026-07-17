@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.4](https://github.com/nightwatch-astro/esp-idf-improv-wifi/compare/v0.2.3...v0.2.4) - 2026-07-17
+
+### Miscellaneous
+
+- complete crates.io metadata (documentation/homepage) ([#28](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/28))
+- exclude shell and tooling scaffolding from language stats
+- *(deps)* bump dorny/paths-filter from 4.0.1 to 4.0.2 in the minor-and-patch group ([#25](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/25))
+- *(deps)* bump actions/checkout from 6.0.2 to 6.0.3 in the minor-and-patch group ([#23](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/23))
+- *(deps)* bump the minor-and-patch group with 2 updates ([#22](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/22))
+
+### Ci
+
+- bump shared release workflow to App-token version ([#26](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/26))
+
 ## [0.2.3](https://github.com/nightwatch-astro/esp-idf-improv-wifi/compare/v0.2.2...v0.2.3) - 2026-04-05
 
 ### Bug Fixes
