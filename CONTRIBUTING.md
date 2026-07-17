@@ -71,6 +71,18 @@ refactor: extract packet parser into module
 - Functions return `Result` types — avoid panics
 - Keep the core protocol logic independent of `esp-idf-svc`
 
+## Contributor License Agreement (CLA)
+
+This project requires a CLA for all contributions. When you open your first pull
+request, the CLA Assistant bot will comment with a link to review and sign the
+agreement. You only need to sign once — it covers all future contributions to
+this repository.
+
+**Why?** The CLA ensures the project maintainer retains the ability to offer the
+code under alternative licensing terms (e.g., a commercial license) without
+needing to track down every contributor individually. Your contribution remains
+publicly available under the project's open-source license (MPL-2.0) regardless.
+
 ## License
 
-Dual-licensed under MIT or Apache 2.0, at your option. By contributing, you agree that your contributions will be licensed under these same terms.
+By contributing, you agree that your contributions will be licensed under the Mozilla Public License, Version 2.0.
