@@ -86,9 +86,6 @@ See the [Improv WiFi serial specification](https://www.improv-wifi.com/serial/) 
 
 ## License
 
-Licensed under either of
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 
-- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or <http://www.apache.org/licenses/LICENSE-2.0>)
-- MIT license ([LICENSE-MIT](LICENSE-MIT) or <http://opensource.org/licenses/MIT>)
-
-at your option.
+This project is licensed under the Mozilla Public License 2.0 — see [LICENSE](LICENSE) for details.
