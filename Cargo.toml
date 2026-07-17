@@ -6,6 +6,7 @@ rust-version = "1.75"
 description = "ImprovWiFi serial provisioning protocol for esp-idf-svc in Rust"
 license = "Apache-2.0"
 repository = "https://github.com/nightwatch-astro/esp-idf-improv-wifi"
+documentation = "https://docs.rs/esp-idf-improv-wifi"
 keywords = ["esp-idf", "esp32", "improv", "wifi", "provisioning"]
 categories = ["embedded", "network-programming"]
 readme = "README.md"
