@@ -31,6 +31,6 @@ undocumented_unsafe_blocks = "warn"
 mem_forget = "warn"
 
 [dependencies]
-esp-idf-svc = { version = "0.52", default-features = false, optional = true }
+esp-idf-svc = { version = "0.53", default-features = false, optional = true }
 log = "0.4"
 thiserror = "2"
