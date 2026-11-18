@@ -505,14 +505,14 @@ mod tests {
                     && p.data[0] == ImprovError::UnableToConnect as u8
             })
             .collect();
-        assert!(!error_packets.is_empty());
+        assert_ne!(error_packets.len(), 0);
 
         // Should end in Ready state
         let state_packets: Vec<_> = packets
             .iter()
             .filter(|p| p.packet_type == PacketType::CurrentState)
             .collect();
-        assert!(!state_packets.is_empty());
+        assert_ne!(state_packets.len(), 0);
         assert_eq!(
             state_packets.last().unwrap().data,
             vec![ImprovState::Ready as u8]
@@ -549,7 +549,7 @@ mod tests {
                     && p.data[0] == ImprovError::InvalidRpc as u8
             })
             .collect();
-        assert!(!error_packets.is_empty());
+        assert_ne!(error_packets.len(), 0);
     }
 
     #[test]
@@ -575,7 +575,7 @@ mod tests {
             .iter()
             .filter(|p| p.packet_type == PacketType::CurrentState)
             .collect();
-        assert!(!state_packets.is_empty());
+        assert_ne!(state_packets.len(), 0);
         assert_eq!(state_packets[0].data, vec![ImprovState::Ready as u8]);
     }
 
@@ -644,7 +644,7 @@ mod tests {
         // Empty terminator
         let (_, data) = parse_rpc_command(&rpc_packets[2].data).unwrap();
         let strings = parse_string_list(&data).unwrap();
-        assert!(strings.is_empty());
+        assert_eq!(strings.len(), 0);
     }
 
     #[test]
@@ -675,7 +675,7 @@ mod tests {
                     && p.data[0] == ImprovError::UnknownRpc as u8
             })
             .collect();
-        assert!(!error_packets.is_empty());
+        assert_ne!(error_packets.len(), 0);
     }
 
     #[test]

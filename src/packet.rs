@@ -391,7 +391,7 @@ mod tests {
         let (cmd, data) = parse_rpc_command(&payload).unwrap();
         assert_eq!(cmd, Command::GetWifiNetworks);
         let strings = parse_string_list(&data).unwrap();
-        assert!(strings.is_empty());
+        assert_eq!(strings.len(), 0);
     }
 
     #[test]
