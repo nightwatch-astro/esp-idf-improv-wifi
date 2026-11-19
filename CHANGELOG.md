@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1](https://github.com/nightwatch-astro/esp-idf-improv-wifi/compare/v0.3.0...v0.3.1) - 2026-11-19
+
+### Miscellaneous
+
+- configure Renovate ([#38](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/38))
+- *(deps)* update esp-idf-svc requirement from 0.52 to 0.53 ([#35](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/35))
+- *(deps)* bump dorny/paths-filter from 4.0.2 to 4.0.3 in the minor-and-patch group ([#34](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/34))
+- *(deps)* bump mozilla-actions/sccache-action from 0.0.10 to 0.0.11 in the minor-and-patch group ([#33](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/33))
+
+### Testing
+
+- satisfy clippy assert_is_empty on Rust 1.99 ([#39](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/39))
+
+### Ci
+
+- move the CLA check to CLA Assistant ([#41](https://github.com/nightwatch-astro/esp-idf-improv-wifi/pull/41))
+
 ## [0.3.0](https://github.com/nightwatch-astro/esp-idf-improv-wifi/compare/v0.2.4...v0.3.0) - 2026-07-17
 
 ### Features
